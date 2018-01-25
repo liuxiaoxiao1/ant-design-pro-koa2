@@ -50,7 +50,13 @@ app.use(require('koa-static')(__dirname + '/public'))
 
 app.use(views(__dirname + '/views', {
     extension: 'hbs',
-    map: { hbs: 'handlebars'}
+    map: { hbs: 'handlebars'},
+    options: {
+      partials: {
+        header: 'tpl/header',
+        footer: 'tpl/footer',
+      }
+    }
 }));
 // handlebars.registerPartial(
 //     'defaultLayout',
