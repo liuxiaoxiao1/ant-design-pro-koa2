@@ -1,0 +1,43 @@
+.DS_Store
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+
+# Compiled binary addons (https://nodejs.org/api/addons.html)
+build/Releasefavicon.png
+
+# Dependency directories
+node_modules/
+
+
+# Optional npm cache directory
+.npm
+
+
+
+.idea/
+
+
+# roadhog-api-doc ignore
+/src/utils/request-temp.js
+_roadhog-api-doc
+
+# production
+/dist
+
+# misc
+npm-debug.log*
+yarn-error.log
+
+/coverage
+yarn.lock
