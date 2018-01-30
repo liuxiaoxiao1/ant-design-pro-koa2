@@ -1,5 +1,6 @@
 const Koa = require('koa')
 const app = new Koa()
+const path = require('path')
 const views = require('koa-views')
 const json = require('koa-json')
 const onerror = require('koa-onerror')
@@ -7,9 +8,17 @@ const bodyparser = require('koa-bodyparser')
 //const logger = require('koa-logger')
 //handlebars
 // var handlebars = require("koa-handlebars");
-var handlebars = require("handlebars");
+//var handlebars = require("handlebars");
 var fs = require('fs');
 
+//以下是koa-hbs写法
+const hbs = require('koa-hbs');
+const convert = require('koa-convert');
+const co = require('co');
+
+//zxq add begin
+//var hbs = require('./hbs');
+//zxq add end
 
 //log工具
 const logUtil = require('./utils/log_util');
@@ -30,7 +39,7 @@ app.use(bodyparser({
 }))
 app.use(json())
 //app.use(logger())
-app.use(require('koa-static')(__dirname + '/public'))
+app.use(require('koa-static')(__dirname + '/dist'))
 
 //handlebars
 // app.use(handlebars({
@@ -48,10 +57,47 @@ app.use(require('koa-static')(__dirname + '/public'))
 //   extension: 'pug'
 // }))
 
+//以下为express中的用法--暂时跑不通
+// global.__basename = __dirname;
+// global.__hbstplname = __dirname + '/views/tpl';
+// hbs.registerPartials(__hbstplname);
+// // view engine setup
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'html');
+// app.engine('html', hbs.__express);
+
+//下面是koa2-hbs的写法--尝试--未通过
+// app.use(hbs.middleware({
+//   viewPath: __dirname + '/views',
+//   partialsPath: __dirname + '/views/tpl'
+// }));
+
+
+//下面是koa-hbs的写法--尝试下--->通过--可行  20180129
+app.use(convert(hbs.middleware({
+  viewPath: __dirname + '/views',
+  partialsPath: __dirname + '/views/tpl'
+})));
+app.use(async (ctx, next) => {
+  ctx.render_ = ctx.render;
+  ctx.render = function (tpl, locals) {
+    return co.call(ctx, ctx.render_(tpl, locals));
+  }
+  await next();
+})
+
+
+
+
+
+//以下为空koa2中的用法--正在调试
 app.use(views(__dirname + '/views', {
     extension: 'hbs',
     map: { hbs: 'handlebars'},
     options: {
+      helpers: {
+
+      },
       partials: {
         header: 'tpl/header',
         footer: 'tpl/footer',
